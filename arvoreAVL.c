@@ -130,19 +130,19 @@ void inorder(ptrNo no) {
 // void rotacaoRR(ptrNo *no){
 //     ptrNo aux = (*no)->dir;
 //     (*no)->dir = aux->esq;
-//     aux->esq = (*no);
+//     aux->esq = *no;
 //     (*no)->altura = maior(altura_no((*no)->esq), altura_no((*no)->dir)) + 1;
-//     aux->altura = maior(altura_no(aux->dir),altura_no(aux->esq)) + 1;
-//     (*no) = aux;
+//     aux->altura = maior(altura_no(aux->dir), altura_no(aux->esq)) + 1;
+//     *no = aux;
 // }
 
 // void rotacaoLL(ptrNo *no){
 //     ptrNo aux = (*no)->esq;
 //     (*no)->esq = aux->dir;
-//     aux->dir = (*no);
+//     aux->dir = *no;
 //     (*no)->altura = maior(altura_no((*no)->esq), altura_no((*no)->dir)) + 1;
-//     aux->altura = maior(altura_no(aux->dir),altura_no(aux->esq)) + 1;
-//     (*no) = aux;
+//     aux->altura = maior(altura_no(aux->dir), altura_no(aux->esq)) + 1;
+//     *no = aux;
 // }
 
 // void rotacaoLR(ptrNo *no){
@@ -160,7 +160,7 @@ void rotacaoRR(ptrNo *no) {
     (*no)->dir = aux->esq;
     aux->esq = *no;
     (*no)->altura = maior(altura_no((*no)->esq), altura_no((*no)->dir)) + 1;
-    aux->altura = maior(altura_no(aux->dir), altura_no(aux->esq)) + 1;
+    aux->altura = maior(altura_no(aux->dir),altura_no(aux->esq)) + 1;
     *no = aux;
 }
 
