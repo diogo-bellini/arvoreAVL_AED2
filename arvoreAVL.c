@@ -26,7 +26,7 @@ int buscar_chave(ptrNo no, int ch); //Faz uma busca pela chave "ch" na arvore
 void destruir_arvore(ptrNo *no); //Desaloca arvore toda recursivamente
 void inorder(ptrNo no); //Faz o print dos valores da árvore em ordem crescente
 void inorder_fb(ptrNo no); // Função para percorrer a árvore e retornar fator de balanço em ordem
-int* sucessor(ptrNo no); //Retorna o próximo valor da árvore (maior que o nó passado)
+ptrNo sucessor(ptrNo no); //Retorna o menor valor da sub-árvore direita
 void rotacaoRR(ptrNo *no); //Gira para a esquerda (balanceando)
 void rotacaoLL(ptrNo *no); //Gira para a direita (balanceando)
 void rotacaoLR(ptrNo *no); //Gira para esquerda depois para a direita (balanceando)
@@ -34,7 +34,6 @@ void rotacaoRL(ptrNo *no); //Gira para direita depois para a esquerda (balancean
 void balancear(ptrNo *no); //Chama a função de calcular fb e as funções de rotação se necessário
 void inserir_chave(ptrNo *no, int ch); //Insere uma chave nova na árvore
 void remover_chave(ptrNo *no, int ch); //Remove uma chave da árvore
-ptrNo procura_menor(ptrNo no);
 
 //Função Principal
 int main(){
@@ -64,10 +63,12 @@ int main(){
     inserir_chave(&raiz, 10);
 
     // 2. Mostrar percurso inorder (como fica a árvore após todas as rotações). 
+    printf("\nÁrvore depois das inserções:\n");
     inorder(raiz);
     printf("\n\n");
 
     // 3. Calcular fator de balanço de todos os nós
+    printf("\nFator de balanço dos nós:\n");
     inorder_fb(raiz);
     printf("\n\n");
 
@@ -77,10 +78,12 @@ int main(){
     remover_chave(&raiz, 15);
 
     // 5. Mostrar percurso inorder (como fica a árvore após todas as rotações)
+    printf("\nÁrvore depois das remoções:\n");
     inorder(raiz);
     printf("\n\n");
 
     // 6. Calcular fator de balanço de todos os nós
+    printf("\nFator de balanço dos nós:\n");
     inorder_fb(raiz);
     printf("\n");
     
@@ -91,8 +94,8 @@ int main(){
     return 0;
 }
 
-// Funções
-// Compara dois inteiros e retorna maior
+// Implementação das Funções
+
 int maior(int a, int b){
     if (a>b)
         return a;
@@ -100,7 +103,6 @@ int maior(int a, int b){
         return b;
 }
 
-// Retorna altura do nó
 int altura_no(ptrNo aux){
     if (aux == NULL)
         return -1;
@@ -108,19 +110,16 @@ int altura_no(ptrNo aux){
         return aux->altura;
 }
 
-// Calcula fator de balanceamento do nó
 int fator_balanco(ptrNo aux){
     return altura_no(aux->esq) - altura_no(aux->dir);
 }
 
-// Verifica se árvore está vazia
 int estaVazia(ptrNo no){
     if (no == NULL)
         return TRUE;
     return FALSE;
 }
 
-// Verifica se chave está contida na árvore
 int buscar_chave(ptrNo no, int ch){
     if (estaVazia(no))
     {
@@ -137,7 +136,6 @@ int buscar_chave(ptrNo no, int ch){
     }
 }
 
-// Libera espaço da árvore
 void destruir_arvore(ptrNo *no){
     if (*no != NULL) {
         destruir_arvore(&((*no)->esq)); // Desaloca a subárvore esquerda
@@ -147,7 +145,6 @@ void destruir_arvore(ptrNo *no){
     }
 }
 
-// Função para percorrer a árvore em ordem
 void inorder(ptrNo no){
     if (no != NULL) {
         inorder(no->esq);           // Visita a subárvore esquerda
@@ -156,7 +153,6 @@ void inorder(ptrNo no){
     }
 }
 
-// Função para percorrer a árvore e retornar fator de balanço em ordem
 void inorder_fb(ptrNo no){
     if (no != NULL) {
         inorder_fb(no->esq);                // Visita a subárvore esquerda
@@ -165,18 +161,16 @@ void inorder_fb(ptrNo no){
     }
 }
 
-// Retorna sucessor do nó
-int* sucessor(ptrNo no){
-    int* ponteiro_valor_sucessor = NULL;
-    if (no->dir!=NULL)
+
+ptrNo sucessor(ptrNo no){
+    ptrNo aux = no->dir;
+    while (aux->esq != NULL)
     {
-        ponteiro_valor_sucessor = &(no->dir->chave);
+        aux = aux->esq;
     }
-    
-    return ponteiro_valor_sucessor;
+    return aux;
 }
 
-// Rotação simples à esquerda
 void rotacaoRR(ptrNo *no){
     ptrNo aux = (*no)->dir;
     (*no)->dir = aux->esq;
@@ -186,7 +180,6 @@ void rotacaoRR(ptrNo *no){
     *no = aux;
 }
 
-// Rotação simples à direita
 void rotacaoLL(ptrNo *no){
     ptrNo aux = (*no)->esq;
     (*no)->esq = aux->dir;
@@ -196,13 +189,11 @@ void rotacaoLL(ptrNo *no){
     *no = aux;
 }
 
-// Rotação dupla à direita
 void rotacaoLR(ptrNo *no){
     rotacaoRR(&(*no)->esq); //Passado dessa forma, pois parametro é ptrNo* e (*no)->esq é ptrNo
     rotacaoLL(no);          // Como no já é um ptrNo*, é passado como no apenas
 }
 
-// Rotação dupla à esquerda
 void rotacaoRL(ptrNo *no){
     rotacaoLL(&(*no)->dir); //Mesma explicação da rotacaoLR
     rotacaoRR(no);
@@ -239,7 +230,6 @@ void balancear(ptrNo *no) {
     }
 }
 
-// Insere uma chave nova na árvore
 void inserir_chave(ptrNo *no, int ch){
     if (buscar_chave((*no), ch))
     {
@@ -280,55 +270,37 @@ void inserir_chave(ptrNo *no, int ch){
     } 
 }
 
-//Remove uma chave da árvore
 void remover_chave(ptrNo *no, int ch){
-    if (!buscar_chave((*no), ch))
-    {
-        printf("Chave não encontrada\n");
-        return;
-    }
-
-    if(ch > (*no)->chave)
-        remover_chave(&(*no)->dir, ch);
-    else if(ch < (*no)->chave)
-        remover_chave(&(*no)->esq, ch);
-    else
-    {
-        if((*no)->esq == NULL || (*no)->dir == NULL)
-        {
-            ptrNo temp = (*no)->esq ? (*no)->esq : (*no)->dir;
-
-            if(temp == NULL)
-            {
-                temp = *no;
-                *no = NULL;
+    if ((*no) != NULL) {
+        if ((*no)->chave == ch) {
+            if ((*no)->esq == NULL && (*no)->dir == NULL) { // Caso 1: Nó é uma folha
+                free(*no);
+                (*no) = NULL;
+            } else if ((*no)->esq != NULL && (*no)->dir == NULL) { // Caso 2: Nó tem apenas filho esquerdo
+                ptrNo aux = (*no);
+                (*no) = (*no)->esq;
+                free(aux);
+                aux = NULL;
+            } else if ((*no)->esq == NULL && (*no)->dir != NULL) { // Caso 2: Nó tem apenas filho direito
+                ptrNo aux = (*no);
+                (*no) = (*no)->dir;
+                free(aux);
+                aux = NULL;
+            } else { // Caso 3: Nó tem dois filhos
+                ptrNo temp = sucessor(*no);
+                (*no)->chave = temp->chave;
+                remover_chave(&(*no)->dir, temp->chave); // Remove o sucessor
             }
-            else
-                *no = temp;
-
-            //free(temp);
-        }
-        else
-        {
-            ptrNo temp = procura_menor((*no)->dir);
-
-            (*no)->chave = temp->chave;
-
-            remover_chave(&(*no)->dir, temp->chave);
+        } else if ((*no)->chave > ch) {
+            remover_chave(&(*no)->esq, ch);
+        } else {
+            remover_chave(&(*no)->dir, ch);
         }
 
-        if(no == NULL)
-            return;
-
-        // Atualiza a altura do nó atual
-        (*no)->altura = maior(altura_no((*no)->esq), altura_no((*no)->dir)) + 1;
-
-        balancear(no);
+        // Rebalanceamento e atualização da altura do nó após a remoção
+        if (*no != NULL) {
+            (*no)->altura = maior(altura_no((*no)->esq), altura_no((*no)->dir)) + 1;
+            balancear(no);    
+        }
     }
-}
-
-ptrNo procura_menor(ptrNo atual){
-    while(atual->esq != NULL)
-        atual = atual->esq;
-    return atual;
 }
